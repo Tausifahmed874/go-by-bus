@@ -15,6 +15,7 @@ server.use(express.json());
 connectDB()
 
 
+
 server.use('/api/user', userRouter );
 server.use('/api/auth', authRouter );
 

@@ -16,15 +16,13 @@ const userSchema = new mongoose.Schema({
     },
     verifyEmailOTP:{
         type: String,
-        select: false,
     },
     verifyEmailOTPExpire:{
         type: Date,
-        select: false,
     },
     role: {
         type: String,
-        default: "user",
+        default: "passenger",
         enum: ["admin", "passenger", "driver"],
         required: true
     },
