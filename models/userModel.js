@@ -10,14 +10,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    isEmailVerified:{
+    isEmailVerified: {
         type: Boolean,
         default: false
     },
-    verifyEmailOTP:{
+    verifyEmailOTP: {
         type: String,
     },
-    verifyEmailOTPExpire:{
+    verifyEmailOTPExpire: {
         type: Date,
     },
     role: {
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     avatar: {
-        public_id:{
+        public_id: {
             type: String
         },
         url: {
@@ -43,18 +43,21 @@ const userSchema = new mongoose.Schema({
         state: { type: String },
         zipCode: { type: String }
     },
+    token: {
+        type: String
+    }
 
     // driver specific
-    licenseNumber: {
-        type: String
-    },
-    busNumber:{
-        type: String
-    },
-    aadharNumber:{
-        type: Number
-    }
-   
+
+
 })
 
 export const User = mongoose.model("User", userSchema);
+
+
+
+// bus details / create details
+
+
+// search details based on bus time
+// name, start, end number
