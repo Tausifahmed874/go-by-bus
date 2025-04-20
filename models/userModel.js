@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
     },
     email: {
         type: String,
@@ -24,7 +23,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "passenger",
         enum: ["admin", "passenger", "driver"],
-        required: true
     },
     avatar: {
         public_id: {

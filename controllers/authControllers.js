@@ -1,43 +1,39 @@
 import { User } from "../models/userModel.js";
 import { generateOtp } from "../utils/generateOtp.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import jwt from "jsonwebtoken";
 
 export const getUserEmail = async (req, res) => {
     try {
-
-        const { email } = req.body
-        let user = await User.findOne({
-            email
-        })
+        const { email } = req.body;
+        let user = await User.findOne({ email });
 
         if (!user) {
-            return res.json({
-                success: false,
-                message: `User does not exists.`
-            });
+            user = await User.create({ email: email });
         }
-        const now = Date.now(); // Current timestamp in milliseconds
-        const tenMinutesLater = new Date(now + 10 * 60 * 1000); // Add 10 minutes (10 * 60 seconds * 1000 milliseconds)
 
-        let otp = generateOtp()
+        const now = Date.now();
+        const tenMinutesLater = new Date(now + 10 * 60 * 1000);
+
+        let otp = generateOtp();
         user = await User.findByIdAndUpdate(user._id, {
             verifyEmailOTP: otp,
             verifyEmailOTPExpire: tenMinutesLater
+        }, { new: true });
 
-        }, { new: true })
-
-        // sendOTP on email
+        // Send OTP via email with beautiful template
         let options = {
             email: email,
-            subject: "TEST email",
-            message: `Hellow ${user.name},\n OTP : ${otp}. <h1>hellow</h1>`
-        }
-        await sendEmail(options)
+            subject: "Your Verification Code",
+            otp: otp,
+            name: user.name // Include if available
+        };
 
+        await sendEmail(options);
 
         res.json({
             success: true,
-            message: `OTP sent ot ${email} successfully`
+            message: `OTP sent to ${email} successfully, please check your email spam section also.`
         });
 
     } catch (error) {
@@ -68,8 +64,13 @@ export const verifyOTP = async (req, res) => {
                 message: `OTP expired, Try again.`
             });
         }
+        const token = jwt.sign({
+            _id: user._id,
+        }, process.env.JWT_SECRET)
+
         user = await User.findByIdAndUpdate(user._id, {
-            isEmailVerified: true
+            isEmailVerified: true,
+            token: token
         }, { new: true })
 
 
