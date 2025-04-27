@@ -5,12 +5,12 @@ import { isAuthenticate } from '../middlewares/authenticate.js';
 const router = express.Router();
 
 // All routes are protected and require authentication
-router.use(isAuthenticate);
 
-router.post('/create', createBus);
-router.get('/my-buses', getMyBuses);
-router.put('/update/:id', updateBus);
-router.delete('/delete/:id', deleteBus);
-router.get('/:id', getBusById);
+
+router.post('/create', isAuthenticate, createBus);
+router.get('/my-buses',isAuthenticate, getMyBuses);
+router.put('/update/:id',isAuthenticate, updateBus);
+router.delete('/delete/:id',isAuthenticate, deleteBus);
+router.get('/:id',isAuthenticate, getBusById);
 
 export default router;

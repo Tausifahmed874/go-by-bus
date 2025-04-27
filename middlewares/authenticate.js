@@ -5,7 +5,6 @@ export const isAuthenticate = async (req, res, next) => {
     try {
         const { token } = req.headers
 
-
         if (!token) {
             return res.status(400).json({
                 message: 'Please authenticate',
@@ -14,6 +13,13 @@ export const isAuthenticate = async (req, res, next) => {
         }
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         let user = await User.findById(decoded._id)
+        if(token !== user.token) {
+            return res.status(400).json({
+                message: 'Please authenticate',
+                success: false
+            })
+        }
+
         if (!user.token) {
             return res.status(400).json({
                 message: 'Please authenticate',
@@ -21,7 +27,6 @@ export const isAuthenticate = async (req, res, next) => {
             })
         }
         req.user = user
-
 
         next()
     }
