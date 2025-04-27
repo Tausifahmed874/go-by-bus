@@ -43,7 +43,11 @@ const userSchema = new mongoose.Schema({
     },
     token: {
         type: String
-    }
+    },
+    favoriteBuses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Bus'
+    }]
 
     // driver specific
 

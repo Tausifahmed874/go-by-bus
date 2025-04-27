@@ -87,4 +87,50 @@ export const verifyOTP = async (req, res) => {
             success: false
         });
     }
-}
+};
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { name, bio, address, role } = req.body;
+        
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                name,
+                bio,
+                address, 
+                role
+            },
+            { new: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            user,
+            message: "Profile updated successfully"
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+export const logout = async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.user._id, {
+            token: null
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Logged out successfully"
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
