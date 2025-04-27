@@ -7,16 +7,16 @@ const router = express.Router();
 
 // Protected routes
 router.post('/create', isAuthenticate, createSchedule);
-router.get('/bus/:busId', getBusSchedule);
+router.get('/bus/:busId', isAuthenticate, getBusSchedule);
 router.delete('/bus/:busId', isAuthenticate, deleteSchedule);
 
 // Stand routes
-router.get('/stands', getAllStands);
-router.get('/stands/:id', getStandById);
+router.get('/stands', isAuthenticate, getAllStands);
+router.get('/stands/:id', isAuthenticate, getStandById);
 router.put('/stands/:id', isAuthenticate, updateStand);
 router.delete('/stands/:id', isAuthenticate, deleteStand);
 
 // Public route for searching buses
-router.get('/search', searchBuses);
+router.get('/search', isAuthenticate, searchBuses);
 
 export default router;

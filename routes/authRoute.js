@@ -10,8 +10,7 @@ router.post('/get-email', getUserEmail);
 router.post('/verify-otp', verifyOTP);
 
 // Protected routes
-router.use(isAuthenticate);
-router.post('/update-profile', updateProfile);
-router.post('/logout', logout);
+router.post('/update-profile',isAuthenticate, updateProfile);
+router.post('/logout', isAuthenticate, logout);
 
 export default router;

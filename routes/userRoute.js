@@ -7,13 +7,12 @@ const router = express.Router();
 router.post('/create-user', createUser);
 
 // Protected routes
-router.use(isAuthenticate);
-router.post('/favorites/add', addToFavorites);
-router.delete('/favorites/:busId', removeFromFavorites);
-router.get('/favorites', getFavorites);
+router.post('/favorites/add',isAuthenticate, addToFavorites);
+router.delete('/favorites/:busId',isAuthenticate, removeFromFavorites);
+router.get('/favorites',isAuthenticate, getFavorites);
 
 // Admin routes
-router.get('/all', getAllUsers);
-router.delete('/:id', deleteUser);
+router.get('/all',isAuthenticate, getAllUsers);
+router.delete('/:id',isAuthenticate, deleteUser);
 
 export default router;
