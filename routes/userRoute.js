@@ -1,10 +1,10 @@
 import express from 'express';
-import { createUser, addToFavorites, removeFromFavorites, getFavorites, getAllUsers, deleteUser } from '../controllers/userControllers.js';
+import {  addToFavorites, removeFromFavorites, getFavorites, getAllUsers, deleteUser } from '../controllers/userControllers.js';
 import { isAuthenticate } from '../middlewares/authenticate.js';
 
 const router = express.Router();
 
-router.post('/create-user', createUser);
+
 
 // Protected routes
 router.post('/favorites/add',isAuthenticate, addToFavorites);

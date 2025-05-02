@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser } from '../controllers/userControllers.js';
+
 import { getUserEmail, verifyOTP, updateProfile, logout } from '../controllers/authControllers.js';
 import { isAuthenticate } from '../middlewares/authenticate.js';
 

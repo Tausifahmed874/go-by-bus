@@ -5,14 +5,30 @@ const BusSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    licenseNumber: {
-        type: String
+    registrationNumber: {
+        type: String,
+        required: true
     },
     busNumber: {
-        type: String
+        type: String,
+        required: true
     },
-    aadharNumber: {
-        type: Number
+    busType:{
+        type: String,
+        default: "regular",
+        enum: ["regular", "sleeper", "volvo", "mini"],
+    },
+    seatCapacity:{
+        type: Number,
+        required: true
+    },
+    isAC:{
+        type: Boolean,
+        default: false
+    },
+    isExpress:{
+        type: Boolean,
+        default: false
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,

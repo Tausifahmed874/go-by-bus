@@ -5,7 +5,7 @@ import { User } from "../models/userModel.js";
 // Create a new bus (Driver only)
 export const createBus = async (req, res) => {
     try {
-        const { name, licenseNumber, busNumber, aadharNumber } = req.body;
+        const { name, registrationNumber, busNumber, busType, seatCapacity, isAC, isExpress } = req.body;
         
         console.log(req.body, req.user);
         // Check if user is a driver
@@ -16,13 +16,14 @@ export const createBus = async (req, res) => {
             });
         }
 
-        
-
         const bus = await Bus.create({
             name,
-            licenseNumber,
+            registrationNumber,
             busNumber,
-            aadharNumber,
+            busType,
+            seatCapacity,
+            isAC,
+            isExpress,
             owner: req.user._id
         });
 

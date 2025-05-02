@@ -97,9 +97,12 @@ export const updateProfile = async (req, res) => {
             req.user._id,
             {
                 name,
+                role,
                 bio,
                 address, 
-                role
+                mobileNumber,
+                aadharNumber,  
+                drivingLicenseNumber
             },
             { new: true }
         );
