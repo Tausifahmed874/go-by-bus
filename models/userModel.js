@@ -47,7 +47,17 @@ const userSchema = new mongoose.Schema({
     favoriteBuses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Bus'
-    }]
+    }],
+    aadharNumber: {
+        type: String
+    },
+    mobileNumber: {
+        type: String,
+        required: true
+    },
+    drivingLicenseNumber: {
+        type: String,
+    }
 
     // driver specific
 
