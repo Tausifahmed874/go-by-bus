@@ -7,11 +7,11 @@ const StandSchema = new mongoose.Schema({
     },
     distance: {
         type: Number,
-        required: true
+        // required: true
     },
     price: {
         type: Number,
-        required: true
+        // required: true
     }
 })
 
