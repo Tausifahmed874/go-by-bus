@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema({
     },
     mobileNumber: {
         type: String,
-        required: true
     },
     drivingLicenseNumber: {
         type: String,
