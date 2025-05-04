@@ -326,7 +326,7 @@ All endpoints follow a consistent error response format:
   ```
 
 ### send feedback/issue
-- `POST /api/feedback` (Bus Owner Only) - Delete a bus schedule
+- `POST /api/feedback` admin email optional else the will receive the mail from which we are sending.
   ```json
   req body:
   {
