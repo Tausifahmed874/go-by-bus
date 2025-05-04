@@ -325,6 +325,16 @@ All endpoints follow a consistent error response format:
   }
   ```
 
+### send feedback/issue
+- `POST /api/feedback` (Bus Owner Only) - Delete a bus schedule
+  ```json
+  req body:
+  {
+    "adminEmail": "admin@example.com",
+    "message": "I have a issue with my GF bro, fix this asap."
+  }
+  ```
+
 ## Access Levels
 - **Public:** No authentication required
 - **Authenticated:** Valid JWT token required

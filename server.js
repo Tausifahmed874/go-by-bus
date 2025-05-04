@@ -7,6 +7,7 @@ import userRouter from './routes/userRoute.js'
 import authRouter from './routes/authRoute.js'
 import busRouter from './routes/busRoute.js'
 import scheduleRouter from './routes/scheduleRoute.js'
+import feedbackRouter from './routes/feedbackRoute.js'
 
 const server = express();
 
@@ -18,6 +19,7 @@ server.use('/api/user', userRouter);
 server.use('/api/auth', authRouter);
 server.use('/api/bus', busRouter);
 server.use('/api/schedule', scheduleRouter);
+server.use('/api/feedback', feedbackRouter);
 
 server.get('/', (req, res) => {
     res.send('Server is healthy.');
