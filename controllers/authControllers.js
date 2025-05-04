@@ -91,7 +91,7 @@ export const verifyOTP = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { name, bio, address, role } = req.body;
+        const { name, bio, address, role, mobileNumber, aadharNumber, drivingLicenseNumber } = req.body;
         
         const user = await User.findByIdAndUpdate(
             req.user._id,
