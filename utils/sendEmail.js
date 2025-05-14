@@ -82,7 +82,7 @@ export const sendEmail = async (options) => {
             <p>If you didn't request this code, you can safely ignore this email.</p>
             
             <div class="footer">
-                <p>© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
+                <p>© ${new Date().getFullYear()} GoByBus. All rights reserved.</p>
             </div>
         </div>
     </body>

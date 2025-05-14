@@ -165,6 +165,22 @@ A Node.js/Express backend for a bus transportation management system.
 - `DELETE /api/user/favorites/:busId`
   - Removes a bus from favorites
 
+- `GET /api/user/profile`
+  - Returns the authenticated user's profile
+  ```json
+  Response:
+  {
+    "success": true,
+    "user": {
+      "_id": "userId",
+      "name": "User Name",
+      "email": "user@example.com",
+      "role": "passenger",
+      // ...other fields
+    }
+  }
+  ```
+
 ## Sample Response Formats
 
 ### Bus Search Response
@@ -340,3 +356,107 @@ All endpoints follow a consistent error response format:
 - **Authenticated:** Valid JWT token required
 - **Bus Owner:** Must be authenticated and own the bus
 - **Admin:** Must be authenticated with admin role
+
+# Manager updates after teacher review
+--------------------------
+--------------------------
+## Manager/Admin Role Approval & Route Publishing (RBAC)
+
+### User Role Flow
+- **User**: Can register, search/view buses/routes, and request to become a manager.
+- **Manager**: (after admin approval) Can create bus schedules/routes (pending admin verification).
+- **Admin**: Can approve/deny manager requests and review/publish/deny routes.
+
+### User Endpoints
+- `POST /api/user/request-manager` (Authenticated)
+  - Request manager role
+  ```json
+  Response:
+  {
+    "success": true,
+    "message": "Manager role request submitted and pending admin approval."
+  }
+  ```
+
+### Admin Endpoints
+- `GET /api/user/manager-requests` (Admin Only)
+  - List all pending manager requests
+  ```json
+  Response:
+  {
+    "success": true,
+    "users": [
+      { "_id": "userId", "name": "User Name", "email": "user@example.com", "managerRequestStatus": "pending" }
+    ]
+  }
+  ```
+- `POST /api/user/approve-manager` (Admin Only)
+  - Approve/deny a manager request
+  ```json
+  Request:
+  {
+    "userId": "userId",
+    "approve": true
+  }
+  Response:
+  {
+    "success": true,
+    "message": "Manager role approved."
+  }
+  ```
+
+### Manager Endpoints
+- `POST /api/schedule/create` (Manager Only)
+  - Create a new bus schedule/route (goes to pending state)
+  ```json
+  Request:
+  {
+    "busId": "busId",
+    "scheduleStops": [
+      { "standName": "Stand A", "arrivalTime": "09:00" },
+      { "standName": "Stand B", "arrivalTime": "10:00" }
+    ]
+  }
+  Response:
+  {
+    "success": true,
+    "schedule": { "_id": "scheduleId", "status": "pending" },
+    "message": "Schedule created and pending admin verification."
+  }
+  ```
+
+### Admin Route Approval
+- `GET /api/schedule/pending` (Admin Only)
+  - List all pending schedules/routes
+  ```json
+  Response:
+  {
+    "success": true,
+    "schedules": [
+      { "_id": "scheduleId", "bus": { ... }, "status": "pending", "createdBy": { "name": "Manager Name" } }
+    ]
+  }
+  ```
+- `POST /api/schedule/approve` (Admin Only)
+  - Approve/deny a schedule/route
+  ```json
+  Request:
+  {
+    "scheduleId": "scheduleId",
+    "approve": true
+  }
+  Response:
+  {
+    "success": true,
+    "message": "Schedule published successfully."
+  }
+  ```
+
+### Data Model Additions
+- **User**: `role` (now includes 'manager'), `managerRequestStatus` ('none', 'pending', 'approved', 'denied')
+- **BusSchedule**: `status` ('pending', 'published', 'denied'), `createdBy` (User reference)
+
+### Access Levels (RBAC)
+- **User**: Can request manager role
+- **Manager**: Can create schedules/routes (pending admin approval)
+- **Admin**: Can approve/deny manager requests and schedules/routes
