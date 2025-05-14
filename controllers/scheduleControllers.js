@@ -7,15 +7,15 @@ export const createSchedule = async (req, res) => {
     try {
         const { busId, scheduleStops } = req.body;
         
-        // Verify user is a driver
-        if (req.user.role !== "driver") {
+        // Only allow managers
+        if (req.user.role !== "manager") {
             return res.status(403).json({
                 success: false,
-                message: "Only drivers can create or update schedules"
+                message: "Only managers can create or update schedules"
             });
         }
 
-        // Verify bus ownership
+        // Verify bus ownership (manager must own the bus)
         const bus = await Bus.findOne({ _id: busId, owner: req.user._id });
         if (!bus) {
             return res.status(403).json({
@@ -73,20 +73,18 @@ export const createSchedule = async (req, res) => {
             });
         }
 
-        // Create or update schedule
-        const schedule = await BusSchedule.findOneAndUpdate(
-            { bus: busId },
-            { 
-                bus: busId,
-                schedule: processedStops
-            },
-            { new: true, upsert: true }
-        ).populate('schedule.stand');
+        // Create schedule (always new, pending, with createdBy)
+        const schedule = await BusSchedule.create({
+            bus: busId,
+            schedule: processedStops,
+            status: 'pending',
+            createdBy: req.user._id
+        });
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             schedule,
-            message: "Schedule updated successfully"
+            message: "Schedule created and pending admin verification."
         });
     } catch (error) {
         res.status(400).json({
@@ -206,6 +204,56 @@ export const deleteSchedule = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Schedule deleted successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Admin: Get all pending schedules
+export const getPendingSchedules = async (req, res) => {
+    try {
+        const schedules = await BusSchedule.find({ status: 'pending' })
+            .populate('bus')
+            .populate('schedule.stand')
+            .populate('createdBy', 'name email');
+        res.status(200).json({
+            success: true,
+            schedules
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Admin: Approve/deny a schedule
+export const approveSchedule = async (req, res) => {
+    try {
+        const { scheduleId, approve } = req.body;
+        const schedule = await BusSchedule.findById(scheduleId);
+        if (!schedule) {
+            return res.status(404).json({
+                success: false,
+                message: "Schedule not found"
+            });
+        }
+        if (schedule.status !== 'pending') {
+            return res.status(400).json({
+                success: false,
+                message: "Schedule is not pending approval"
+            });
+        }
+        schedule.status = approve ? 'published' : 'denied';
+        await schedule.save();
+        res.status(200).json({
+            success: true,
+            message: approve ? "Schedule published successfully." : "Schedule denied."
         });
     } catch (error) {
         res.status(500).json({

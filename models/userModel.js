@@ -22,7 +22,12 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "passenger",
-        enum: ["admin", "passenger", "driver"],
+        enum: ["admin", "passenger", "driver", "manager"],
+    },
+    managerRequestStatus: {
+        type: String,
+        default: "none",
+        enum: ["none", "pending", "approved", "denied"]
     },
     avatar: {
         public_id: {

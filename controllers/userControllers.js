@@ -131,3 +131,113 @@ export const deleteUser = async (req, res) => {
         });
     }
 };
+
+// Request manager role
+export const requestManagerRole = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        if (user.managerRequestStatus === "pending") {
+            return res.status(400).json({
+                success: false,
+                message: "Manager role request already pending."
+            });
+        }
+        if (user.managerRequestStatus === "approved" || user.role === "manager") {
+            return res.status(400).json({
+                success: false,
+                message: "You are already a manager."
+            });
+        }
+        user.managerRequestStatus = "pending";
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: "Manager role request submitted and pending admin approval."
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Admin: View pending manager requests
+export const getPendingManagerRequests = async (req, res) => {
+    try {
+        const pendingUsers = await User.find({ managerRequestStatus: "pending" });
+        res.status(200).json({
+            success: true,
+            users: pendingUsers
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Admin: Approve/deny manager request
+export const approveManagerRequest = async (req, res) => {
+    try {
+        const { userId, approve } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        if (user.managerRequestStatus !== "pending") {
+            return res.status(400).json({
+                success: false,
+                message: "No pending manager request for this user."
+            });
+        }
+        if (approve) {
+            user.role = "manager";
+            user.managerRequestStatus = "approved";
+        } else {
+            user.managerRequestStatus = "denied";
+        }
+        await user.save();
+        res.status(200).json({
+            success: true,
+            message: approve ? "Manager role approved." : "Manager role denied."
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Get own profile
+export const getProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password -token');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
