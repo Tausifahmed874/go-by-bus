@@ -6,7 +6,8 @@ import { getAllStands, getStandById, updateStand, deleteStand } from '../control
 const router = express.Router();
 
 // Protected routes
-router.post('/create', isAuthenticate, authorize(['manager']), createSchedule);
+// router.post('/create', isAuthenticate, authorize(['manager']), createSchedule);
+router.post('/create', isAuthenticate, createSchedule);
 router.get('/bus/:busId', isAuthenticate, getBusSchedule);
 router.delete('/bus/:busId', isAuthenticate, deleteSchedule);
 

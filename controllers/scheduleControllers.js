@@ -6,14 +6,6 @@ import { Stand } from "../models/standModel.js";
 export const createSchedule = async (req, res) => {
     try {
         const { busId, scheduleStops } = req.body;
-        
-        // Only allow managers
-        if (req.user.role !== "manager") {
-            return res.status(403).json({
-                success: false,
-                message: "Only managers can create or update schedules"
-            });
-        }
 
         // Verify bus ownership (manager must own the bus)
         const bus = await Bus.findOne({ _id: busId, owner: req.user._id });
